@@ -104,5 +104,84 @@ SELECT UNNEST(STRING_TO_ARRAY(LISTED_IN,', ')) AS GENRE,
 FROM NETFLIX
 GROUP BY 1;
 
----- 10. 
+---- 10. Find each year and the average numbers of content relase by India on Netflix
+--------- return the top 5 year with highest average content relase
+
+SELECT 
+    country,
+    release_year,
+    COUNT(show_id) AS total_release,
+    ROUND(
+        COUNT(show_id)::numeric /
+        (SELECT COUNT(show_id) FROM netflix WHERE country = 'India')::numeric * 100, 2
+    ) AS avg_release
+FROM netflix
+WHERE country = 'India'
+GROUP BY country, release_year
+ORDER BY avg_release DESC
+LIMIT 5;
+
+
+---- 11. List all movies that are documentaries
+
+SELECT * 
+FROM NETFLIX
+WHERE listed_in ILIKE '%documentaries%' ;
+
+---- 12. Find all content without a director
+
+SELECT *
+FROM NETFLIX
+WHERE director ISNULL
+
+--- 13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years
+
+SELECT *
+FROM NETFLIX
+WHERE CASTS ILIKE '%SALMAN KHAN%'
+      AND
+	  release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10
+ 
+--- 14. Find the top 10 actors who have appeared in the highest number of movies produced in India
+
+SELECT UNNEST(STRING_TO_ARRAY(casts, ',')),
+       COUNT(*)
+FROM NETFLIX
+WHERE country ILIKE '%india%'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+
+--- 15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords
+---- Label content containing these keywords as 'Bad' and all other content as 'Good'
+---- Count how many items fall into each category
+
+WITH new_table
+AS
+(
+SELECT *,
+       CASE 
+	   WHEN
+	       description ILIKE '%kill%' OR
+		   description ILIKE '%violence%' THEN 'Bad_content'
+		   ELSE 'Good_content'
+		   END category
+FROM NETFLIX
+)
+SELECT 
+      category,
+	  COUNT(*) AS total_count
+FROM new_table
+GROUP BY 1;
+
+
+
+
+
+
+
+
+
+
 
