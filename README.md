@@ -24,3 +24,28 @@ CREATE TABLE netflix (
   listed_in VARCHAR(250),
   description VARCHAR(550)
 );
+```
+## Objectives
+Analyze the distribution of content types (movies vs TV shows).
+Identify the most common ratings for movies and TV shows.
+List and analyze content based on release years, countries, and durations.
+Explore and categorize content based on specific criteria and keywords.
+
+
+## Business Problems and SQL Solutions
+
+1. Count the Number of Movies vs TV Shows
+   
+Objective: Determine the distribution of content types on Netflix.
+
+```sql
+SELECT type, COUNT(*) 
+FROM netflix 
+GROUP BY 1;
+```
+
+
+
+
+
+
